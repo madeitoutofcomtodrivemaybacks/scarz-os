@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Loading...</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 🔥 Boot Screen -->
+<div id="bootScreen" class="boot">
+  <h1>Scarz OS</h1>
+  <p>Booting...</p>
+</div>
+
+<!-- 💻 OS Selector -->
+<div id="osSelect" style="display:none; text-align:center; margin-top:20%;">
+  <h2>Select OS</h2>
+  <button onclick="bootOS()">Enter Scarz OS</button>
+</div>
+
+<!-- 🖥️ Desktop -->
+<div id="desktop" style="display:none;">
+
+  <!-- 🎥 Video Wallpaper -->
+  <video autoplay muted loop id="bgVideo">
+    <source src="wallpaper.mp4" type="video/mp4">
+  </video>
+
+  <!-- 🔍 Search -->
+  <input type="text" id="search" placeholder="Search games..." onkeyup="searchGames()">
+
+  <!-- 🎮 Games -->
+  <div id="games-container"></div>
+
+  <!-- 📦 APK Loader -->
+  <div id="apkLoader">
+    <input type="file" id="apkInput" accept=".apk">
+    <button onclick="loadAPK()">Install APK</button>
+  </div>
+
+  <!-- 📱 Apps -->
+  <div id="apps"></div>
+
+  <!-- 🍎 Dock -->
+  <div id="dock">
+    <img src="https://cdn-icons-png.flaticon.com/512/732/732221.png" onclick="openTikTok()">
+    <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" onclick="goHome()">
+    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828919.png" onclick="toggleFullscreen()">
+  </div>
+
+</div>
+
+<script src="games.js"></script>
+
+<script>
+// ⏳ Boot flow
+setTimeout(() => {
+  document.getElementById("bootScreen").style.display = "none";
+  document.getElementById("osSelect").style.display = "block";
+}, 2000);
+
+function bootOS() {
+  document.getElementById("osSelect").style.display = "none";
+  document.getElementById("desktop").style.display = "block";
+}
+
+// 🎮 Load games
+const container = document.getElementById("games-container");
+
+function loadGames(list) {
+  container.innerHTML = "";
+  list.forEach(game => {
+    const card = document.createElement("div");
+    card.className = "game-card";
+    card.innerHTML = `<h4>${game.name}</h4>`;
+    card.onclick = () => window.open(game.url, "_blank");
+    container.appendChild(card);
+  });
+}
+
+loadGames(games);
+
+// 🔍 Search
+function searchGames() {
+  const query = document.getElementById("search").value.toLowerCase();
+  const filtered = games.filter(g => g.name.toLowerCase().includes(query));
+  loadGames(filtered);
+}
+
+// 📦 APK Loader
+const appsContainer = document.getElementById("apps");
+
+function loadAPK() {
+  const file = document.getElementById("apkInput").files[0];
+  if (!file) return;
+
+  const name = file.name.replace(".apk", "");
+
+  const app = document.createElement("div");
+  app.className = "game-card";
+  app.innerHTML = `<h4>${name}</h4>`;
+  app.onclick = () => launchApp(name);
+
+  appsContainer.appendChild(app);
+}
+
+function launchApp(name) {
+  if (name.toLowerCase().includes("roblox")) {
+    window.open("https://www.roblox.com", "_blank");
+  } else if (name.toLowerCase().includes("fortnite")) {
+    window.open("https://www.epicgames.com/fortnite", "_blank");
+  } else {
+    alert("App not supported");
+  }
+}
+
+// 🕵️ Cloaking
+document.title = "Google Classroom";
+let link = document.createElement("link");
+link.rel = "icon";
+link.href = "https://ssl.gstatic.com/classroom/favicon.png";
+document.head.appendChild(link);
+
+// 🍎 Dock
+function goHome() {
+  location.reload();
+}
+
+function toggleFullscreen() {
+  document.documentElement.requestFullscreen();
+}
+
+function openTikTok() {
+  window.open("https://www.tiktok.com", "_blank");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scarz OS</title>
+  <style>
+    body {
+      margin:0;
+      background:black;
+      color:white;
+      font-family:Arial;
+      overflow:hidden;
+    }
+
+    /* Boot animation */
+    #bootAnimation {
+      position:fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:black;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      z-index:2000;
+      display:none;
+    }
+
+    #bootAnimation img {
+      width:200px; height:200px; object-fit:contain;
+    }
+
+    #bootAnimation p {
+      color:white;
+      margin-top:20px;
+      font-size:24px;
+    }
+
+    /* Choose OS screen */
+    #chooseOS {
+      position:fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:black;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      z-index:2500;
+    }
+
+    #chooseOS img { width:150px; margin-bottom:20px; }
+    #chooseOS h1 { color:white; font-size:36px; font-family:Arial; }
+    #chooseOS p { color:#888; margin-top:10px; }
+
+    /* MOND Clock */
+    #clock {
+      position:absolute;
+      top:40%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      text-align:center;
+    }
+
+    #time { font-size:100px; font-weight:200; letter-spacing:5px; }
+    #date { font-size:20px; opacity:0.6; letter-spacing:3px; }
+
+    /* Taskbar */
+    #taskbar {
+      position:fixed;
+      bottom:10px;
+      left:50%;
+      transform:translateX(-50%);
+      width:60%;
+      height:60px;
+      border-radius:20px;
+      backdrop-filter: blur(20px);
+      background: rgba(255,255,255,0.08);
+    }
+
+    #taskbar-icons { position:absolute; left:50%; transform:translateX(-50%); }
+    #taskbar-icons img { width:40px; margin:10px; cursor:pointer; }
+
+    /* Windows */
+    .window {
+      position:absolute;
+      top:80px;
+      left:100px;
+      width:70%; height:70%;
+      background:#111;
+      border-radius:12px;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .window-bar {
+      background:#000;
+      padding:10px;
+      display:flex;
+      justify-content:space-between;
+    }
+
+    iframe { flex:1; border:none; }
+
+    /* Android launcher */
+    #androidLauncher {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:20px;
+      padding:20px;
+    }
+
+    .app { text-align:center; cursor:pointer; }
+    .app img { width:60px; }
+
+    /* Spotify widget */
+    #spotifyWidget {
+      position:absolute;
+      top:10px;
+      right:10px;
+      width:300px;
+      height:380px;
+      background:#111;
+      border-radius:12px;
+      overflow:hidden;
+    }
+
+    /* Netflix widget */
+    #netflixWidget {
+      position:absolute;
+      top:400px;
+      right:10px;
+      width:300px;
+      height:380px;
+      background:#111;
+      border-radius:12px;
+      overflow:hidden;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Choose OS Screen -->
+<div id="chooseOS">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Hard_disk_icon.png">
+  <h1>Scarz OS</h1>
+  <p>Press any key to boot</p>
+</div>
+
+<!-- Boot Animation -->
+<div id="bootAnimation">
+  <img id="bootLogo" src="">
+  <p id="bootText"></p>
+</div>
+
+<!-- Desktop -->
+<div id="desktop" style="display:none;">
+
+  <!-- Clock -->
+  <div id="clock">
+    <div id="time"></div>
+    <div id="date"></div>
+  </div>
+
+  <!-- Browser -->
+  <div id="browserWindow" class="window" style="display:none;">
+    <div class="window-bar">
+      <span>Browser</span>
+      <button onclick="closeBrowser()">X</button>
+    </div>
+    <input id="searchBar" type="text" placeholder="Search or type URL" style="padding:10px; font-size:16px; border:none; width:100%;">
+    <iframe id="browserFrame"></iframe>
+  </div>
+
+  <!-- Android Launcher -->
+  <div id="androidWindow" class="window" style="display:none;">
+    <div class="window-bar">
+      <span>Android</span>
+      <button onclick="closeAndroid()">X</button>
+    </div>
+    <div id="androidLauncher">
+      <div class="app" onclick="openApp('https://www.roblox.com')">
+        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968705.png"><p>Roblox</p>
+      </div>
+      <div class="app" onclick="openApp('https://www.tiktok.com')">
+        <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png"><p>TikTok</p>
+      </div>
+      <div class="app" onclick="openApp('https://www.youtube.com')">
+        <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png"><p>YouTube</p>
+      </div>
+      <div class="app" onclick="openApp('https://discord.com')">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png"><p>Discord</p>
+      </div>
+      <div class="app" onclick="openApp('https://chat.openai.com')">
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png"><p>ChatGPT</p>
+      </div>
+      <div class="app" onclick="openApp('https://duckmath.org')">
+        <img src="https://cdn-icons-png.flaticon.com/512/906/906175.png"><p>Games</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div id="settingsWindow" class="window" style="display:none;">
+    <div class="window-bar">
+      <span>Settings</span>
+      <button onclick="settingsWindow.style.display='none'">X</button>
+    </div>
+    <div style="padding:20px;">
+      <button onclick="toggleFullscreen()">Fullscreen</button>
+    </div>
+  </div>
+
+  <!-- Spotify Widget -->
+  <div id="spotifyWidget">
+    <iframe id="spotifyFrame" src="https://open.spotify.com/embed/track/5qmq61DAAOUa5ZDG1j4N4H" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+  </div>
+
+  <!-- Netflix Widget -->
+  <div id="netflixWidget">
+    <iframe src="https://www.netflix.com/browse" width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
+  </div>
+
+  <!-- Taskbar -->
+  <div id="taskbar">
+    <div id="taskbar-icons">
+      <img src="https://cdn-icons-png.flaticon.com/512/732/732221.png" onclick="openSettings()">
+      <img src="https://cdn-icons-png.flaticon.com/512/841/841364.png" onclick="openBrowser()">
+      <img src="https://cdn-icons-png.flaticon.com/512/1828/1828919.png" onclick="openAndroid()">
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* Choose OS Screen */
+const chooseOS = document.getElementById("chooseOS");
+const bootAnimation = document.getElementById("bootAnimation");
+document.addEventListener("keydown", ()=>{ chooseOS.style.display="none"; bootAnimation.style.display="flex"; nextLogo(); });
+
+/* Boot Animation */
+const bootLogo = document.getElementById("bootLogo");
+const bootText = document.getElementById("bootText");
+const logos = [
+  {src:"https://upload.wikimedia.org/wikipedia/commons/3/3f/Arch_Linux_Logo.svg", text:"Arch Linux"},
+  {src:"https://upload.wikimedia.org/wikipedia/commons/f/fa/MacOS_logo.svg", text:"macOS"},
+  {src:"https://upload.wikimedia.org/wikipedia/commons/5/5f/Windows_logo_-_2021.svg", text:"Windows"},
+  {src:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGB...", text:"Code Running"}
+];
+let currentLogo=0;
+function nextLogo(){
+  if(currentLogo>=logos.length){ bootAnimation.style.display="none"; desktop.style.display="block"; return; }
+  bootLogo.src=logos[currentLogo].src;
+  bootText.textContent=logos[currentLogo].text;
+  currentLogo++;
+  setTimeout(nextLogo,1500);
+}
+
+/* Desktop Clock */
+const time=document.getElementById("time");
+const date=document.getElementById("date");
+function updateClock(){
+  const now=new Date();
+  time.textContent=now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  date.textContent=now.toLocaleDateString();
+}
+setInterval(updateClock,1000); updateClock();
+
+/* Browser */
+const browserWindow=document.getElementById("browserWindow");
+const browserFrame=document.getElementById("browserFrame");
+function openBrowser(){ browserWindow.style.display="flex"; }
+function closeBrowser(){ browserWindow.style.display="none"; }
+function openApp(url){ browserFrame.src=url; openBrowser(); }
+
+/* Browser search */
+const searchBar=document.getElementById("searchBar");
+searchBar.addEventListener("keydown", e=>{ if(e.key==='Enter'){ let val=e.target.value; if(!val.startsWith('http')) val='https://www.google.com/search?q='+encodeURIComponent(val); browserFrame.src=val; }});
+
+/* Android */
+const androidWindow=document.getElementById("androidWindow");
+function openAndroid(){ androidWindow.style.display="flex"; }
+function closeAndroid(){ androidWindow.style.display="none"; }
+
+/* Settings */
+const settingsWindow=document.getElementById("settingsWindow");
+function openSettings(){ settingsWindow.style.display="flex"; }
+function toggleFullscreen(){ document.documentElement.requestFullscreen(); }
+
+/* Cloak */
+document.title="Google Classroom";
+</script>
+
+</body>
+</html>

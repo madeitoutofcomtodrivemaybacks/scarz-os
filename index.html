@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title> Google Classroom </title>
+
+<style>
+body {
+  margin:0;
+  color:white;
+  font-family:sans-serif;
+  overflow:hidden;
+  background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACoCAMAAABt9SM9...") no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* DARK OVERLAY */
+body::after {
+  content:"";
+  position:fixed;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.25);
+  pointer-events:none;
+}
+
+/* BOOT */
+#boot {
+  position:fixed;
+  width:100%; height:100%;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:30px;
+  z-index:9999;
+}
+
+/* LOCK */
+#lock {
+  position:fixed;
+  width:100%; height:100%;
+  background:black;
+  display:none;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:9998;
+}
+
+/* MOND CLOCK */
+.mond {
+  position:fixed;
+  top:20px;
+  right:30px;
+  text-align:right;
+}
+.mond-time { font-size:40px; color:#0ff; }
+.mond-date { font-size:14px; color:#aaa; }
+
+/* TASKBAR */
+.taskbar {
+  position:fixed;
+  bottom:0;
+  width:100%;
+  height:50px;
+  background:rgba(20,20,20,0.7);
+  backdrop-filter: blur(10px);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.task-icons { display:flex; gap:20px; }
+.task-icons img { width:30px; cursor:pointer; }
+
+/* LAUNCHER */
+.launcher {
+  position:absolute;
+  top:80px;
+  left:50px;
+  width:320px;
+  background:#111;
+  border-radius:20px;
+}
+.search {
+  width:100%;
+  padding:10px;
+  background:#222;
+  border:none;
+  color:white;
+}
+.apps {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  padding:10px;
+}
+.icon { width:60px; cursor:pointer; }
+
+/* WINDOWS */
+.window {
+  position:absolute;
+  width:500px;
+  height:300px;
+  background:#111;
+  border:1px solid #444;
+  display:none;
+  resize:both;
+  overflow:hidden;
+}
+.header {
+  background:#222;
+  padding:5px;
+  display:flex;
+  justify-content:space-between;
+  cursor:move;
+}
+iframe { width:100%; height:85%; border:none; }
+
+/* TERMINAL */
+#terminalOutput {
+  height:80%;
+  overflow:auto;
+  font-family:monospace;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bootSound" src="https://www.myinstants.com/media/sounds/windows-xp-startup.mp3"></audio>
+
+<div id="boot">Scarz OS Booting...</div>
+
+<div id="lock">
+  <h1>Scarz OS</h1>
+  <input type="password" id="pass">
+  <button onclick="unlock()">Unlock</button>
+</div>
+
+<!-- CLOCK -->
+<div class="mond">
+  <div class="mond-time" id="mondTime"></div>
+  <div class="mond-date" id="mondDate"></div>
+</div>
+
+<!-- TASKBAR -->
+<div class="taskbar">
+  <div class="task-icons">
+    <img src="windows.png" onclick="toggleLauncher()">
+    <img src="browser.png" onclick="openWin('browser')">
+  </div>
+</div>
+
+<!-- LAUNCHER -->
+<div class="launcher" id="launcher">
+  <input class="search" placeholder="Search..." oninput="searchApps(this.value)">
+  <div class="apps" id="apps">
+
+    <img src="browser.png" class="icon" data-name="browser" onclick="openWin('browser')">
+    <img src="ai.png" class="icon" data-name="ai" onclick="openWin('ai')">
+    <img src="terminal.png" class="icon" data-name="terminal" onclick="openWin('term')">
+    <img src="store.png" class="icon" data-name="store" onclick="openWin('store')">
+    <img src="games.png" class="icon" data-name="games" onclick="openWin('gamesHub')">
+    <img src="fnaf.png" class="icon" data-name="horror" onclick="openWin('fnaf')">
+
+  </div>
+</div>
+
+<!-- BROWSER -->
+<div class="window" id="browser">
+  <div class="header">Browser
+    <button onclick="closeWin('browser')">X</button>
+  </div>
+  <input id="urlBar" placeholder="Enter URL..." style="width:100%" onkeydown="go(event)">
+  <iframe id="browserFrame"></iframe>
+</div>
+
+<!-- AI -->
+<div class="window" id="ai">
+  <div class="header">AI Assistant</div>
+  <div id="chat"></div>
+  <input id="aiInput" onkeydown="aiChat(event)">
+</div>
+
+<!-- TERMINAL -->
+<div class="window" id="term">
+  <div class="header">Terminal</div>
+  <div id="terminalOutput"></div>
+  <input id="cmd" onkeydown="runCmd(event)">
+</div>
+
+<!-- STORE -->
+<div class="window" id="store">
+  <div class="header">Game Store</div>
+  <button onclick="installApp('YouTube','browser')">Install YouTube</button>
+</div>
+
+<!-- GAME HUB -->
+<div class="window" id="gamesHub">
+  <div class="header">Game Hub</div>
+  <button onclick="loadGame('https://poki.com')">Poki</button>
+  <button onclick="loadGame('https://crazygames.com')">CrazyGames</button>
+  <iframe id="gameFrame"></iframe>
+</div>
+
+<!-- FNAF -->
+<div class="window" id="fnaf">
+  <div class="header">Horror Game</div>
+  <iframe src="https://scratch.mit.edu/projects/904158501/embed"></iframe>
+</div>
+
+<script>
+
+/* BOOT */
+setTimeout(()=>{
+  boot.style.display="none";
+  lock.style.display="flex";
+  bootSound.play();
+},2000);
+
+/* UNLOCK */
+function unlock(){
+  if(pass.value==="1234"){
+    lock.style.display="none";
+    localStorage.setItem("unlock","true");
+  }
+}
+if(localStorage.getItem("unlock")) lock.style.display="none";
+
+/* CLOCK */
+setInterval(()=>{
+  let now=new Date();
+  mondTime.innerText=now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  mondDate.innerText=now.toDateString();
+},1000);
+
+/* LAUNCHER */
+function toggleLauncher(){
+  launcher.style.display = launcher.style.display==="none"?"block":"none";
+}
+
+/* SEARCH */
+function searchApps(v){
+  v=v.toLowerCase();
+  document.querySelectorAll(".icon").forEach(i=>{
+    i.style.display=i.dataset.name.includes(v)?"block":"none";
+  });
+}
+
+/* WINDOWS */
+function openWin(id){ document.getElementById(id).style.display="block"; }
+function closeWin(id){ document.getElementById(id).style.display="none"; }
+
+/* DRAG */
+document.querySelectorAll(".window").forEach(win=>{
+  let h=win.querySelector(".header");
+  let offX,offY,down=false;
+
+  h.onmousedown=e=>{
+    down=true;
+    offX=e.clientX-win.offsetLeft;
+    offY=e.clientY-win.offsetTop;
+  };
+  document.onmouseup=()=>down=false;
+  document.onmousemove=e=>{
+    if(!down) return;
+    win.style.left=e.clientX-offX+"px";
+    win.style.top=e.clientY-offY+"px";
+  };
+});
+
+/* SNAP */
+document.querySelectorAll(".window").forEach(w=>{
+  w.onmouseup=()=>{
+    if(w.offsetLeft<50){ w.style.left="0"; w.style.width="50%"; }
+  };
+});
+
+/* BROWSER */
+function go(e){
+  if(e.key==="Enter"){
+    browserFrame.src="https://"+urlBar.value;
+  }
+}
+
+/* AI */
+function aiChat(e){
+  if(e.key==="Enter"){
+    chat.innerHTML+="<div>You: "+aiInput.value+"</div>";
+    chat.innerHTML+="<div>AI: Interesting...</div>";
+    aiInput.value="";
+  }
+}
+
+/* TERMINAL */
+function runCmd(e){
+  if(e.key==="Enter"){
+    let c=cmd.value;
+    if(c==="help") terminalOutput.innerHTML+="help time clear<br>";
+    else if(c==="time") terminalOutput.innerHTML+=new Date()+"<br>";
+    else if(c==="clear") terminalOutput.innerHTML="";
+    else terminalOutput.innerHTML+="unknown<br>";
+    cmd.value="";
+  }
+}
+
+/* GAME LOAD */
+function loadGame(url){
+  gameFrame.src=url;
+}
+
+</script>
+
+</body>
+</html>

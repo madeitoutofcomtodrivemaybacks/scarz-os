@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Scarz OS</title>
+<style>
+body{margin:0;font-family:sans-serif;color:white;overflow:hidden;background:black}
+
+/* VIDEO WALLPAPER */
+#wallpaperVideo{
+position:fixed;top:0;left:0;width:100%;height:100%;
+object-fit:cover;z-index:-1;
+}
+
+/* BOOT */
+#boot{
+position:fixed;width:100%;height:100%;
+display:flex;justify-content:center;align-items:center;
+background:black;z-index:10;flex-direction:column;
+}
+#boot video{
+width:100%;height:100%;object-fit:cover;position:absolute;
+}
+/* APPLE LOADING BAR */
+#loadingBarContainer{
+position:absolute;bottom:80px;width:40%;height:6px;
+background:rgba(255,255,255,0.2);border-radius:10px;overflow:hidden;
+}
+#loadingBar{
+width:0%;height:100%;background:white;border-radius:10px;
+transition:width 0.2s;
+}
+
+/* LOCK */
+#lock{display:none;position:fixed;width:100%;height:100%;flex-direction:column;justify-content:center;align-items:center;}
+#lock video{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;}
+#lockTime{font-size:60px;text-shadow:0 0 10px black;}
+#lockDay{font-size:22px;margin-bottom:20px;text-shadow:0 0 5px black;}
+
+/* DESKTOP */
+#desktop{display:none;width:100%;height:100%}
+#mondClock{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:48px;text-align:center;text-shadow:0 0 10px black;}
+
+/* DOCK */
+#dock{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.15);padding:10px 20px;border-radius:20px;display:flex;gap:15px;backdrop-filter:blur(20px);}
+.icon{font-size:26px;cursor:pointer}
+
+/* WINDOWS */
+.window{position:absolute;display:none;flex-direction:column;border-radius:16px;resize:both;overflow:hidden;background:rgba(255,255,255,0.15);backdrop-filter:blur(20px);}
+.window-header{background:rgba(255,255,255,0.2);padding:8px;display:flex;justify-content:space-between;cursor:move;}
+.window-header button{background:#ff5f57;border:none;border-radius:50%;width:12px;height:12px;}
+
+/* START MENU */
+#startMenu{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);width:300px;padding:20px;border-radius:20px;background:rgba(255,255,255,0.2);display:none;}
+.start-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;text-align:center;}
+.start-grid div{background:rgba(255,255,255,0.2);padding:15px;border-radius:15px;cursor:pointer;}
+
+/* ANDROID LAUNCHER */
+#androidLauncher{
+display:none;
+position:fixed;
+top:0;left:0;width:100vw;height:100vh;
+background:#000;
+z-index:20;
+overflow:hidden;
+}
+/* SEARCH BAR */
+#appSearch{
+width:80%;
+margin:10px auto;
+display:block;
+padding:12px;
+border:none;
+border-radius:20px;
+font-size:16px;
+outline:none;
+position:absolute;
+top:10px;
+left:50%;
+transform:translateX(-50%);
+z-index:25;
+}
+/* PAGES */
+#pages{
+display:flex;width:200%;height:calc(100% - 80px);
+transition:transform 0.3s;
+}
+.page{
+width:100%;height:100%;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:25px;
+padding:70px 30px 30px 30px;
+}
+/* APPS */
+.app{text-align:center;font-size:28px;cursor:pointer;}
+.app span{display:block;font-size:12px;color:#ccc;margin-top:5px;}
+
+/* GAME HUB */
+#gameHub{display:flex;gap:40px;padding:40px;overflow-x:auto;height:100%;}
+.game{display:flex;flex-direction:column;align-items:center;cursor:pointer;}
+.game img{width:140px;height:140px;border-radius:20px;}
+</style>
+</head>
+<body>
+
+<!-- WALLPAPER -->
+<video id="wallpaperVideo" autoplay loop muted>
+<source src="https://i.imgur.com/vhqM5RH_lq.mp4">
+</video>
+
+<!-- BOOT -->
+<div id="boot">
+<video id="bootVideo" autoplay muted>
+<source src="https://i.imgur.com/CqsYumk_lq.mp4">
+</video>
+<div id="loadingBarContainer">
+<div id="loadingBar"></div>
+</div>
+</div>
+
+<!-- LOCK -->
+<div id="lock">
+<video id="lockVideo" autoplay loop muted></video>
+<div id="lockTime"></div>
+<div id="lockDay"></div>
+<input id="pin" placeholder="Enter PIN">
+<button onclick="unlock()">Unlock</button>
+</div>
+
+<!-- DESKTOP -->
+<div id="desktop">
+
+<div id="mondClock">
+<div id="desktopTime"></div>
+<div id="desktopDay"></div>
+</div>
+
+<div id="dock">
+<span class="icon" onclick="toggleStart()">🪟</span>
+<span class="icon" onclick="toggleLauncher()">🤖</span>
+<span class="icon" onclick="openBrowser()">🌐</span>
+<span class="icon" onclick="openSpotify()">🎵</span>
+<span class="icon" onclick="openGames()">🎮</span>
+<span class="icon" onclick="openSettings()">⚙️</span>
+<span class="icon" onclick="openTerminal()">💻</span>
+</div>
+
+<div id="startMenu">
+<div class="start-grid">
+<div onclick="openBrowser()">🌐<span>Browser</span></div>
+<div onclick="openSpotify()">🎵<span>Music</span></div>
+<div onclick="openGames()">🎮<span>Games</span></div>
+<div onclick="toggleLauncher()">🤖<span>Launcher</span></div>
+<div onclick="openSettings()">⚙️<span>Settings</span></div>
+<div onclick="openTerminal()">💻<span>Terminal</span></div>
+</div>
+</div>
+
+<!-- BROWSER -->
+<div id="browser" class="window">
+<div class="window-header">Browser <button onclick="closeWin('browser')"></button></div>
+<input id="urlBar" placeholder="Search or URL">
+<button onclick="goSearch()">Go</button>
+<iframe id="frame" style="flex:1;"></iframe>
+</div>
+
+<!-- MUSIC -->
+<div id="spotify" class="window">
+<div class="window-header">Music <button onclick="closeWin('spotify')"></button></div>
+<input type="file" accept=".mp3" onchange="loadMusic(event)">
+<audio id="audioPlayer" controls></audio>
+</div>
+
+<!-- GAMES -->
+<div id="games" class="window">
+<div class="window-header">Games <button onclick="closeWin('games')"></button></div>
+<div id="gameHub">
+<div class="game" onclick="launchGame('https://duckmath.org')">
+<img src="https://i.imgur.com/8Qf6K6L.png">
+<span>Duck Math</span>
+</div>
+<div class="game" onclick="launchGame('https://sites.google.com/view/unblockedgames')">
+<img src="https://i.imgur.com/8Qf6K6L.png">
+<span>Unblocked Games</span>
+</div>
+<div class="game" onclick="launchGame('https://roblox.com')">
+<img src="https://i.imgur.com/8Qf6K6L.png">
+<span>Roblox</span>
+</div>
+</div>
+<iframe id="gameFrame"></iframe>
+</div>
+
+<!-- SETTINGS -->
+<div id="settings" class="window">
+<div class="window-header">Settings <button onclick="closeWin('settings')"></button></div>
+<button onclick="panic()">Panic</button>
+<button onclick="setDefaultWallpaper()">Default Wallpaper</button>
+<button onclick="uploadWallpaper()">Upload Wallpaper</button>
+</div>
+
+<!-- TERMINAL -->
+<div id="terminal" class="window" style="width:500px;height:400px;">
+<div class="window-header">Terminal <button onclick="closeWin('terminal')"></button></div>
+<div id="terminalOutput" style="flex:1;padding:10px;overflow-y:auto;background:rgba(0,0,0,0.5);color:#0f0;font-family:monospace;"></div>
+<input id="terminalInput" style="padding:10px;border:none;outline:none;width:100%;box-sizing:border-box;background:rgba(0,0,0,0.7);color:#0f0;font-family:monospace;" placeholder="Type a command..." onkeydown="if(event.key==='Enter'){runCommand(this.value);this.value='';}">
+</div>
+
+<!-- ANDROID LAUNCHER -->
+<div id="androidLauncher">
+<input id="appSearch" placeholder="Search apps..." oninput="searchApps()">
+<div id="pages">
+<div class="page">
+<div class="app" onclick="openBrowser()">🌐<span>Browser</span></div>
+<div class="app" onclick="openSpotify()">🎵<span>Music</span></div>
+<div class="app" onclick="openGames()">🎮<span>Games</span></div>
+<div class="app" onclick="openSettings()">⚙️<span>Settings</span></div>
+<div class="app" onclick="openTerminal()">💻<span>Terminal</span></div>
+<!-- Scarz apps -->
+<div class="app" onclick="launchGame('https://scarzai.com')">🤖<span>Scarz AI</span></div>
+<div class="app" onclick="launchGame('https://scarzhub.com')">🗂️<span>Scarz Hub</span></div>
+<div class="app" onclick="launchGame('https://scarzflix.com')">🎬<span>Scarz Flix</span></div>
+</div>
+<div class="page">
+<!-- extra apps if needed -->
+</div>
+</div>
+</div>
+
+<script>
+// LOCK SCREEN VIDEO
+document.getElementById("lockVideo").src = "https://i.imgur.com/DrsKni6.mp4";
+
+/* BOOT + LOADING BAR */
+let progress=0;
+let bar=document.getElementById("loadingBar");
+let interval=setInterval(()=>{
+progress+=2;
+bar.style.width=progress+"%";
+if(progress>=100){
+clearInterval(interval);
+boot.style.transition="opacity 1s";
+boot.style.opacity="0";
+setTimeout(()=>{
+boot.style.display="none";
+lock.style.display="flex";
+},1000);
+}},60);
+
+/* UNLOCK */
+function unlock(){
+if(pin.value==="1234"){
+lock.style.display="none";
+desktop.style.display="block";
+}
+}
+
+/* CLOCK */
+function updateClock(){
+let d=new Date();
+let h=d.getHours()%12||12;
+let m=String(d.getMinutes()).padStart(2,'0');
+let ampm=d.getHours()>=12?"PM":"AM";
+let time=h+":"+m+" "+ampm;
+let day=d.toLocaleDateString(undefined,{weekday:'long'});
+lockTime.innerText=time; lockDay.innerText=day;
+desktopTime.innerText=time; desktopDay.innerText=day;
+}
+setInterval(updateClock,1000);
+
+/* APPS */
+function openBrowser(){browser.style.display='flex'}
+function openSpotify(){spotify.style.display='flex'}
+function openGames(){games.style.display='flex'}
+function openSettings(){settings.style.display='flex'}
+function openTerminal(){terminal.style.display='flex'}
+function closeWin(id){document.getElementById(id).style.display='none'}
+function goSearch(){let val=urlBar.value.trim();if(!val)return;frame.src="https://duckduckgo.com/?q="+encodeURIComponent(val);}
+function loadMusic(e){let file=e.target.files[0];audioPlayer.src=URL.createObjectURL(file);audioPlayer.play();}
+function launchGame(url){gameFrame.style.display="block";gameFrame.src=url;}
+function panic(){
+    window.open("https://ixl.com", "_blank");
+    const output=document.getElementById("terminalOutput");
+    output.innerHTML+="<div><strong>Panic command activated!</strong></div>";
+    output.scrollTop=output.scrollHeight;
+}
+function setDefaultWallpaper(){wallpaperVideo.src="https://i.imgur.com/vhqM5RH_lq.mp4"}
+function uploadWallpaper(){let i=document.createElement("input");i.type="file";i.onchange=e=>{let f=e.target.files[0];let url=URL.createObjectURL(f);if(f.type.includes("video")){wallpaperVideo.style.display="block";wallpaperVideo.src=url;}else{wallpaperVideo.style.display="none";document.body.style.background=`url(${url}) center/cover`;}};i.click();}
+function toggleStart(){startMenu.style.display=startMenu.style.display==="block"?"none":"block";}
+function toggleLauncher(){const launcher=document.getElementById("androidLauncher");launcher.style.display=launcher.style.display==="block"?"none":"block";}
+
+/* SWIPE PAGES */
+let currentPage=0,startX=0;
+androidLauncher.addEventListener("touchstart",e=>{startX=e.touches[0].clientX});
+androidLauncher.addEventListener("touchend",e=>{let endX=e.changedTouches[0].clientX,diff=startX-endX;if(diff>50&&currentPage<1)currentPage++;if(diff<-50&&currentPage>0)currentPage--;pages.style.transform=`translateX(-${currentPage*100}%)`;});
+let isDown=false;
+androidLauncher.addEventListener("mousedown",e=>{isDown=true;startX=e.clientX});
+androidLauncher.addEventListener("mouseup",e=>{if(!isDown)return;isDown=false;let diff=startX-e.clientX;if(diff>50&&currentPage<1)currentPage++;if(diff<-50&&currentPage>0)currentPage--;pages.style.transform=`translateX(-${currentPage*100}%)`;});
+
+/* SEARCH APPS */
+function searchApps(){let input=document.getElementById("appSearch").value.toLowerCase();document.querySelectorAll(".app").forEach(app=>{app.style.display=app.innerText.toLowerCase().includes(input)?"block":"none";});}
+
+/* TERMINAL COMMANDS */
+function runCommand(cmd){
+  const output=document.getElementById("terminalOutput");
+  cmd=cmd.toLowerCase();
+  output.innerHTML+="<div>> "+cmd+"</div>";
+
+  const launcherPage=document.querySelector("#pages .page");
+
+  // OPEN APPS
+  if(cmd.includes("open browser")) openBrowser();
+  else if(cmd.includes("open spotify")) openSpotify();
+  else if(cmd.includes("open games")) openGames();
+  else if(cmd.includes("open settings")) openSettings();
+  else if(cmd.includes("open terminal")) openTerminal();
+  else if(cmd.includes("panic")) panic();
+
+  // DOWNLOAD/ADD APPS
+  else if(cmd.startsWith("download ")){
+    let appName=cmd.replace("download ","").trim();
+    if(!appName){ output.innerHTML+="<div>Specify an app name</div>"; return; }
+
+    // Decide emoji & URL
+    let emoji="📦", url=null;
+    switch(appName.toLowerCase()){
+      case "youtube": emoji="📺"; url="https://youtube.com"; break;
+      case "roblox": emoji="🎮"; url="https://roblox.com"; break;
+      case "duckmath": emoji="🦆"; url="https://duckmath.org"; break;
+      case "google": emoji="🔍"; url="https://google.com"; break;
+      case "scarz ai": emoji="🤖"; url="https://scarzai.com"; break;
+      case "scarz hub": emoji="🗂️"; url="https://scarzhub.com"; break;
+      case "scarz flix": emoji="🎬"; url="https://scarzflix.com"; break;
+      default: emoji="📦"; url=null; break;
+    }
+
+    let app=document.createElement("div");
+    app.className="app";
+    app.innerHTML=`${emoji}<span>${appName}</span>`;
+    app.onclick=()=>{ if(url) launchGame(url); else alert(appName+" opened!"); };
+    launcherPage.appendChild(app);
+
+    output.innerHTML+=`<div>Downloaded ${appName}</div>`;
+  }
+  else output.innerHTML+="<div>Command not found</div>";
+
+  output.scrollTop=output.scrollHeight;
+}
+</script>
+</body>
+</html>
